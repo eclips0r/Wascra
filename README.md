@@ -22,7 +22,7 @@ For a full list of provided factions from the wiki, please refer to the [officia
 To scrape the desired faction(s), just execute the following command in a terminal:
 
 ```sh
-go run wascra.go [{-flags}] <faction1> [faction2]
+go run wascra.go [{-flags}] {faction1} [faction2]
 ```
 
 
@@ -52,10 +52,10 @@ go run wascra.go -v space-marines
 
 ### Future improvements / planned fixes
 
-[ ] - fix selector strings
+- [ ] - fix selector strings
 
-[ ] - serialize Model struct for JSON export
+- [ ] - serialize Model struct for JSON export
 
-[ ] - add JSON support
+- [ ] - add JSON support
 
-[ ] - concurrent scraping for multiple factions
+- [ ] - concurrent scraping for multiple factions
