@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+    "encoding/json"
 	"time"
 
 	"github.com/gocolly/colly/v2"
@@ -20,18 +21,18 @@ import (
 
 // characteristics of a model
 type Model struct {
-    Power           string
-    TroopSize       string
-    Name            string
-    Movement        string
-    WeaponSkill     string
-    BalisticSkill   string
-    Strength        string
-    Toughness       string
-    Wounds          string
-    Attacks         string
-    Leadership      string
-    Save            string
+    Name            string `json:"name"`
+    Power           string `json:"power"`
+    TroopSize       string `json:"troop_size"`
+    Movement        string `json:"movement"`
+    WeaponSkill     string `json:"ws"`
+    BalisticSkill   string `json:"bs"`
+    Strength        string `json:"strength"`
+    Toughness       string `json:"toughness"`
+    Wounds          string `json:"wounds"`
+    Attacks         string `json:"attacks"`
+    Leadership      string `json:"leadership"`
+    Save            string `json:"saveroll"`
 }
 
 // prints model 
@@ -70,6 +71,28 @@ func returnModel (m *Model) string {
     return ms
 }
 
+// prints JSON string to console
+func printJSON (models *[]Model) {
+    ret, err := json.MarshalIndent(models, "", "  ")
+
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println(string(ret))
+}
+
+// returns JSON string representation of models
+func returnJSON (models *[]Model) string {
+    ret, err := json.MarshalIndent(models, "", "  ")
+
+    if err != nil {
+        panic(err)
+    }
+
+    return string(ret)
+}
+
 func main() {
     // ++++ start of command-line argument definition ++++
     verbosePtr := flag.Bool("v", false, "verbose output")
@@ -78,6 +101,7 @@ func main() {
 
     writeverbPtr := flag.Bool("wv", false, "write verbose")
 
+    serialPtr := flag.Bool("j", false, "serialize data to JSON")
     // ++++ end of command-line argument definition ++++
 
     flag.Parse()
@@ -109,10 +133,10 @@ func main() {
     })
 
     // traverse army
-    c.OnHTML(".NavColumns3", func(element *colly.HTMLElement) {
+    c.OnHTML(".NavDropdown-content_P", func(element *colly.HTMLElement) {
         element.ForEach("a", func(_ int, h *colly.HTMLElement) {
-            // dont visit references on landing page
-            if (!strings.Contains(h.Attr("href"), "#")) {
+            // dont visit references on landing page and collated datasheet
+            if (!strings.Contains(h.Attr("href"), "#") && !strings.Contains(h.Attr("href"), "datasheets")) {
                 modelCollector.Visit(domain + h.Attr("href"))
             }
         })
@@ -172,7 +196,7 @@ func main() {
         c.Visit(domainFact + faction)
     }
 
-    // write scraped models to file (./faction/argx_argy.txt)
+    // write to file if -w was provided
     if (*writePtr) {
         filePath := "./factions/"
 
@@ -181,31 +205,60 @@ func main() {
             filePath = filePath + args[i] + "_"
         }
 
-        filePath = filePath + args[len(args) - 1] + ".txt"
+        // write to /factions/args.json with flag -j
+        if (*serialPtr) {
+            filePath = filePath + args[len(args) - 1] + ".json"
+        // write to /factions/args.txt without flag -j
+        } else {
+            filePath = filePath + args[len(args) - 1] + ".txt"
+        }
 
+
+        // create file
         file, err := os.OpenFile(filePath, os.O_CREATE | os.O_WRONLY, 0644)
 
         if (err != nil) {
             panic(err)
         }
         
-        for i := range models {
-            l, err := file.WriteString(returnModel(&models[i]))
+        // write scraped data as JSON
+        if (*serialPtr) {
+            l, err := file.WriteString(returnJSON(&models))
 
             if (err != nil) {
                 panic(err)
             }
 
             if (*writeverbPtr) {
-                fmt.Println("Model written with", l, "bytes")
+                fmt.Println("Written JSON with", l, "bytes")
+            }
+
+        // write scraped data as formatted string
+        } else {
+            for i := range models {
+                l, err := file.WriteString(returnModel(&models[i]))
+    
+                if (err != nil) {
+                    panic(err)
+                }
+    
+                if (*writeverbPtr) {
+                    fmt.Println("Model written with", l, "bytes")
+                }
             }
         }
+
         file.Close()
         fmt.Println("done")
         
+    // if no -w was provided, print data in the according format to console
     } else {
-        for i := range models {
-            printModel(&models[i])
+        if (*serialPtr) {
+            printJSON(&models)
+        } else {
+            for i := range models {
+                printModel(&models[i])
+            }
         }
         fmt.Println("done")
     }
