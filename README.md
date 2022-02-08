@@ -36,13 +36,23 @@ Supported flags are:
 
 `-wv` - verbose writing
 
+`-j` - serializes scraped data with JSON
+
 `-h` - lists additional help
 
 
-#### Example
+#### Examples
+
+Scraping Space Marines, verbose output to console: 
 
 ```sh
 go run wascra.go -v space-marines
+```
+
+Scraping Orks and Genestealer-Cults, write JSON to file: `factions/orks_genestealer-cults.json`:
+
+```sh
+go run wascra.go -w -j orks genestealer-cults
 ```
 
 ***Note:*** Faction arguments can be lower or uppercase, while whitespaces must be replaced with hyphens `-`.
@@ -54,8 +64,10 @@ go run wascra.go -v space-marines
 
 - [ ] - fix selector strings
 
-- [ ] - serialize Model struct for JSON export
+- [x] - serialize Model struct for JSON export
 
-- [ ] - add JSON support
+- [x] - add JSON support
 
 - [ ] - concurrent scraping for multiple factions
+
+- [ ] - add option to clear cache with flag/ provide .sh
