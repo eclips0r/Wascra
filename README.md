@@ -38,7 +38,11 @@ Supported flags are:
 
 `-j` - serializes scraped data with JSON
 
+`-clear` - clears the cache
+
 `-h` - lists additional help
+
+***Note that `-clear` exits the program, so there will be no scraping even if other flags and arguments are provided!***
 
 
 #### Examples
@@ -64,10 +68,12 @@ go run wascra.go -w -j orks genestealer-cults
 
 - [ ] - fix selector strings
 
+- [ ] - correctly parse multiple instances of datasheet values
+
 - [x] - serialize Model struct for JSON export
 
 - [x] - add JSON support
 
 - [ ] - concurrent scraping for multiple factions
 
-- [ ] - add option to clear cache with flag/ provide .sh
+- [x] - add option to clear cache with flag/ provide .sh
