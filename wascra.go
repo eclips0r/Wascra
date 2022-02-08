@@ -102,9 +102,23 @@ func main() {
     writeverbPtr := flag.Bool("wv", false, "write verbose")
 
     serialPtr := flag.Bool("j", false, "serialize data to JSON")
+
+    clearPtr := flag.Bool("clear", false, "clear cache")
     // ++++ end of command-line argument definition ++++
 
     flag.Parse()
+
+    // clears the cache, exits the program afterwards
+    if (*clearPtr) {
+        err := os.RemoveAll("./cache")
+
+        if (err != nil) {
+            panic(err)
+        }
+
+        fmt.Println("Cleared cache!")
+        return
+    }
 
     args := flag.Args()
 
@@ -249,7 +263,7 @@ func main() {
         }
 
         file.Close()
-        fmt.Println("done")
+        fmt.Println("Done!")
         
     // if no -w was provided, print data in the according format to console
     } else {
@@ -260,6 +274,6 @@ func main() {
                 printModel(&models[i])
             }
         }
-        fmt.Println("done")
+        fmt.Println("Done!")
     }
 }
