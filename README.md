@@ -34,7 +34,7 @@ Supported flags are:
 
 `-w` - writes data to an auto-generated file to `./factions/` (filename is a concatenation of given arguments/factions)
 
-`-wv` - verbose writing
+`-wv` - write verbose
 
 `-j` - serializes scraped data with JSON
 
@@ -53,7 +53,7 @@ Scraping Space Marines, verbose output to console:
 go run wascra.go -v space-marines
 ```
 
-Scraping Orks and Genestealer-Cults, write JSON to file: `factions/orks_genestealer-cults.json`:
+Scraping Orks and Genestealer-Cults, write JSON to file: [`factions/orks_genestealer-cults.json`](/factions/orks_genestealer-cults.json):
 
 ```sh
 go run wascra.go -w -j orks genestealer-cults
