@@ -9,14 +9,14 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	"os"
-	"strings"
+    "flag"
+    "fmt"
+    "os"
+    "strings"
     "encoding/json"
-	"time"
+    "time"
 
-	"github.com/gocolly/colly/v2"
+    "github.com/gocolly/colly/v2"
 )
 
 // characteristics of a model
